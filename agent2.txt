@@ -1,0 +1,11 @@
+kubectl logs antrea-agent-jz62q -n kube-system
+I0212 10:16:13.602216       1 log_file.go:93] Set log file max size to 104857600
+I0212 10:16:13.603385       1 agent.go:105] "Starting Antrea agent" version="v2.0.0-dev-84e23bc7.dirty"
+I0212 10:16:13.603418       1 agent.go:106] "The github id is: prakrit55" and the pod is="antrea-agent-jz62q"
+I0212 10:16:13.603440       1 client.go:89] No kubeconfig file was specified. Falling back to in-cluster config
+I0212 10:16:13.604543       1 prometheus.go:189] Initializing prometheus metrics
+I0212 10:16:13.612353       1 ovs_client.go:71] Connecting to OVSDB at address /var/run/openvswitch/db.sock
+I0212 10:16:14.613276       1 ovs_client.go:90] Not connected yet, will try again in 2s
+I0212 10:16:14.614108       1 agent.go:412] Setting up node network
+I0212 10:16:14.614723       1 discoverer.go:82] Starting ServiceCIDRDiscoverer
+I0212 10:16:14.623590       1 agent.go:1023] "Got Interface MTU" MTU=1450
