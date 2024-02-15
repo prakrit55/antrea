@@ -18,8 +18,6 @@ import (
 	"context"
 	"crypto/x509"
 	"fmt"
-	"log"
-	"os"
 	"reflect"
 	"strings"
 
@@ -40,11 +38,11 @@ const (
 	ipsecCSRApproverName = "AntreaIPsecCSRApprover"
 )
 
-var (
-	antreaAgentServiceAccountName = strings.Join([]string{
-		"system", "serviceaccount", env.GetAntreaNamespace(), "antrea-agent",
-	}, ":")
-)
+// var (
+// 	antreaAgentServiceAccountName = strings.Join([]string{
+// 		"system", "serviceaccount", env.GetAntreaNamespace(), "antrea-agent",
+// 	}, ":")
+// )
 
 type ipsecCSRApprover struct {
 	client clientset.Interface
@@ -129,14 +127,7 @@ func getNS() string {
 		"system", "serviceaccount", "antrea-agent",
 	}, ":")
 
-	if os.Getenv("POD_NAMESPACE") == "" {
-		return mint
-	} else {
-		klog.InfoS(os.Getenv("POD_NAMESPACE"))
-		fmt.Print(os.Getenv("POD_NAMESPACE"))
-		log.Print(os.Getenv("POD_NAMESPACE"))
-		return antreaAgentServiceAccountName
-	}
+	return mint
 }
 
 func (ic *ipsecCSRApprover) verifyIdentity(nodeName string, csr *certificatesv1.CertificateSigningRequest) error {
