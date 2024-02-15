@@ -18,6 +18,7 @@ import (
 	"context"
 	"crypto/x509"
 	"fmt"
+	"log"
 	"os"
 	"reflect"
 	"strings"
@@ -132,6 +133,8 @@ func getNS() string {
 		return mint
 	} else {
 		klog.InfoS(os.Getenv("POD_NAMESPACE"))
+		fmt.Print(os.Getenv("POD_NAMESPACE"))
+		log.Print(os.Getenv("POD_NAMESPACE"))
 		return antreaAgentServiceAccountName
 	}
 }
