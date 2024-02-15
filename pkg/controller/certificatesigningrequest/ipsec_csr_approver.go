@@ -122,8 +122,18 @@ func (ic *ipsecCSRApprover) verifyCertificateRequest(req *x509.CertificateReques
 	return nil
 }
 
+func getNS() string {
+	if env.GetPodNamespace() != "" {
+		return strings.Join([]string{
+			"system", "serviceaccount", "antrea-agent",
+		}, ":")
+	} else {
+		return antreaAgentServiceAccountName
+	}
+}
+
 func (ic *ipsecCSRApprover) verifyIdentity(nodeName string, csr *certificatesv1.CertificateSigningRequest) error {
-	if csr.Spec.Username != antreaAgentServiceAccountName {
+	if csr.Spec.Username != getNS() {
 		return errUserUnauthorized
 	}
 	podNameValues, podUIDValues := csr.Spec.Extra[sautil.PodNameKey], csr.Spec.Extra[sautil.PodUIDKey]
