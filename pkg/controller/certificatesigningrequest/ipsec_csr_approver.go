@@ -123,7 +123,7 @@ func (ic *ipsecCSRApprover) verifyCertificateRequest(req *x509.CertificateReques
 }
 
 func getNS() string {
-	if env.GetPodNamespace() != "" {
+	if env.GetPodNamespace() == "" {
 		return strings.Join([]string{
 			"system", "serviceaccount", "antrea-agent",
 		}, ":")
