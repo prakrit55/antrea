@@ -18,6 +18,7 @@ import (
 	"context"
 	"crypto/x509"
 	"fmt"
+	"os"
 	"reflect"
 	"strings"
 
@@ -127,7 +128,15 @@ func getNS() string {
 		"system", "serviceaccount", "antrea-agent",
 	}, ":")
 
-	return mint
+	antreaAgentServiceAccountName := strings.Join([]string{
+		"system", "serviceaccount", env.GetAntreaNamespace(), "antrea-agent",
+	}, ":")
+
+	if os.Getenv("POD_NAMESPACE") == "" {
+		return mint
+	} else {
+		return antreaAgentServiceAccountName
+	}
 }
 
 func (ic *ipsecCSRApprover) verifyIdentity(nodeName string, csr *certificatesv1.CertificateSigningRequest) error {

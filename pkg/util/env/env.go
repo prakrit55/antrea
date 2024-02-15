@@ -85,6 +85,7 @@ func GetAntreaConfigMapName() string {
 func GetPodNamespace() string {
 	podNamespace := os.Getenv(PodNamespaceEnvKey)
 	if podNamespace == "" {
+		klog.Warningf("Environment variable %s not found", os.Getenv(PodNamespaceEnvKey))
 		klog.Warningf("Environment variable %s not found %s", PodNamespaceEnvKey, os.Getenv(PodNamespaceEnvKey))
 	}
 	return podNamespace
