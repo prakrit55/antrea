@@ -18,6 +18,7 @@ import (
 	"context"
 	"crypto/x509"
 	"fmt"
+	"os"
 	"reflect"
 	"strings"
 
@@ -123,7 +124,7 @@ func (ic *ipsecCSRApprover) verifyCertificateRequest(req *x509.CertificateReques
 }
 
 func getNS() string {
-	if env.GetPodNamespace() == "POD_NAMESPACE" {
+	if os.Getenv("POD_NAMESPACE") == "" {
 		return strings.Join([]string{
 			"system", "serviceaccount", "antrea-agent",
 		}, ":")
