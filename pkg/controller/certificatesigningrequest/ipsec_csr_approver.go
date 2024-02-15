@@ -131,6 +131,7 @@ func getNS() string {
 	if os.Getenv("POD_NAMESPACE") == "" {
 		return mint
 	} else {
+		klog.InfoS(os.Getenv("POD_NAMESPACE"))
 		return antreaAgentServiceAccountName
 	}
 }
