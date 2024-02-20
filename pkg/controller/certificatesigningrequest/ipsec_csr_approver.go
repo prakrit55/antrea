@@ -18,6 +18,7 @@ import (
 	"context"
 	"crypto/x509"
 	"fmt"
+	"os"
 	"reflect"
 	"strings"
 
@@ -53,6 +54,8 @@ func (ic *ipsecCSRApprover) getAntreaAgentServiceAccount() string {
 	// antreaAgentServiceAccountNameWithoutNS := strings.Join([]string{
 	// 	"system", "serviceaccount", "antrea-agent",
 	// }, ":")
+
+	klog.InfoS(os.Getenv("POD_NAMESPACE"))
 
 	ic.antreaAgentServiceAccountName = strings.Join([]string{
 		"system", "serviceaccount", env.GetAntreaNamespace(), "antrea-agent",
