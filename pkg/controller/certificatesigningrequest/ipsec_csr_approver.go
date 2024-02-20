@@ -18,7 +18,6 @@ import (
 	"context"
 	"crypto/x509"
 	"fmt"
-	"os"
 	"reflect"
 	"strings"
 
@@ -39,14 +38,9 @@ const (
 	ipsecCSRApproverName = "AntreaIPsecCSRApprover"
 )
 
-// var (
-// 	antreaAgentServiceAccountName = strings.Join([]string{
-// 		"system", "serviceaccount", env.GetAntreaNamespace(), "antrea-agent",
-// 	}, ":")
-// )
-
 type ipsecCSRApprover struct {
-	client clientset.Interface
+	client                        clientset.Interface
+	antreaAgentServiceAccountName string
 }
 
 var ipsecTunnelUsages = sets.New[string](
@@ -54,6 +48,22 @@ var ipsecTunnelUsages = sets.New[string](
 )
 
 var _ approver = (*ipsecCSRApprover)(nil)
+
+func (ic *ipsecCSRApprover) getAntreaAgentServiceAccount() string {
+	// antreaAgentServiceAccountNameWithoutNS := strings.Join([]string{
+	// 	"system", "serviceaccount", "antrea-agent",
+	// }, ":")
+
+	ic.antreaAgentServiceAccountName = strings.Join([]string{
+		"system", "serviceaccount", env.GetAntreaNamespace(), "antrea-agent",
+	}, ":")
+
+	// if os.Getenv("POD_NAMESPACE") == "" {
+	// 	return antreaAgentServiceAccountNameWithoutNS
+	// } else {
+	return ic.antreaAgentServiceAccountName
+	// }
+}
 
 func (ic *ipsecCSRApprover) recognize(csr *certificatesv1.CertificateSigningRequest) bool {
 	return csr.Spec.SignerName == antreaapis.AntreaIPsecCSRSignerName
@@ -123,24 +133,8 @@ func (ic *ipsecCSRApprover) verifyCertificateRequest(req *x509.CertificateReques
 	return nil
 }
 
-func getNS() string {
-	mint := strings.Join([]string{
-		"system", "serviceaccount", "antrea-agent",
-	}, ":")
-
-	antreaAgentServiceAccountName := strings.Join([]string{
-		"system", "serviceaccount", env.GetAntreaNamespace(), "antrea-agent",
-	}, ":")
-
-	if os.Getenv("POD_NAMESPACE") == "" {
-		return mint
-	} else {
-		return antreaAgentServiceAccountName
-	}
-}
-
 func (ic *ipsecCSRApprover) verifyIdentity(nodeName string, csr *certificatesv1.CertificateSigningRequest) error {
-	if csr.Spec.Username != getNS() {
+	if csr.Spec.Username != ic.getAntreaAgentServiceAccount() {
 		return errUserUnauthorized
 	}
 	podNameValues, podUIDValues := csr.Spec.Extra[sautil.PodNameKey], csr.Spec.Extra[sautil.PodUIDKey]
